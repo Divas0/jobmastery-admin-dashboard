@@ -5,11 +5,13 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useMutation, useQuery } from "react-query";
 import { ChevronDown } from "lucide-react";
+import { toast } from "sonner";
 
 const AddBlog = () => {
   const [editorData, setEditorData] = useState("");
   const [activeCategory, setActiveCategory] = useState(null);
   const [isModalActive, setIsModalActive] = useState(false);
+  // const [selectedReporterName, setSelectedReporterName] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -109,6 +111,10 @@ const AddBlog = () => {
       ),
     }));
   };
+  const handleReporterChange = (e) => {
+    setFormData({ ...formData, reporterName: e.target.value });
+    // setSelectedReporterName(e.target.value);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -143,7 +149,7 @@ const AddBlog = () => {
     {
       onSuccess: (data) => {
         console.log("blog added successfully:", data);
-        if (data?.blog) {
+        if (data.blog) {
           toast("blog added successfully");
         }
       },
@@ -152,6 +158,11 @@ const AddBlog = () => {
       },
     }
   );
+  const { data: userOptions, isLoading: userIsLoading } = useQuery({
+    queryKey: ["allusers"],
+    queryFn: () =>
+      fetch(`http://localhost:4000/user/allusers/`).then((res) => res.json()),
+  });
 
   if (categoryIsLoading) {
     return <h1>Category loading...</h1>;
@@ -239,7 +250,7 @@ const AddBlog = () => {
             />
           </div>
 
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label
               className="block text-sm font-medium text-gray-700"
               htmlFor="reporterName"
@@ -254,6 +265,32 @@ const AddBlog = () => {
               onChange={handleChange}
               className="mt-1 p-2 border border-gray-300 rounded-md w-full"
             />
+          </div> */}
+          <div className="mb-4">
+            <label
+              className="block text-sm font-medium text-gray-700"
+              htmlFor="reporterName"
+            >
+              Reporter Name
+            </label>
+            <select
+              id="reporterName"
+              name="reporterName"
+              value={formData.reporterName}
+              onChange={handleReporterChange}
+              className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+            >
+              <option value="">Select a reporter</option>
+              {userOptions?.user.map((user) => (
+                <option
+                  key={user.id}
+                  value={user.name}
+                  className="font-semibold"
+                >
+                  {user.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="mb-4">
@@ -386,7 +423,7 @@ const AddBlog = () => {
               <tbody>
                 {categoryOptions?.categories?.map((category) => (
                   <tr key={category.id}>
-                    <td className="p-2 border">
+                    <td className="p-[5px] border">
                       <label className="flex items-center mb-2">
                         <input
                           type="checkbox"

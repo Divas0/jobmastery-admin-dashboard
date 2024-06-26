@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+var HTML = require("html-parse-stringify");
 
 exports.addBlogs = async (req, res) => {
   const {
@@ -69,12 +70,13 @@ exports.addBlogs = async (req, res) => {
       },
     }));
 
+    const text = HTML.parse(content);
     const blog = await prisma.post.create({
       data: {
         title,
         subtitle: secondHeading,
         tagline,
-        content,
+        content: text,
         scheduledPublishTime: isoScheduledPublishTime,
         newsHashTag,
         status: publishStatus ? "PUBLISH" : "DRAFT",
@@ -102,7 +104,7 @@ exports.addBlogs = async (req, res) => {
 
 exports.getAllBlogs = async (req, res) => {
   try {
-    const blogs = await prisma.user.findMany({});
+    const blogs = await prisma.post.findMany({});
     return res
       .status(200)
       .send({ blogs, message: "all blogs fetched succesfully" });
