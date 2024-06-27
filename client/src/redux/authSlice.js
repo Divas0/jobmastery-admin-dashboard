@@ -4,9 +4,8 @@ const initialState = {
   isLoggedIn: false,
   currentUser: {
     email: "",
-    password: "",
-    username: "",
     authorId: "",
+    role: "",
   },
 };
 
@@ -18,7 +17,14 @@ export const authSlice = createSlice({
       state.isLoggedIn = action.payload;
     },
     updateCurrentUser: (state, action) => {
-      state.currentUser = action.payload;
+      const {
+        email = state.currentUser.email,
+        authorId = state.currentUser.authorId,
+        role = state.currentUser.role,
+      } = action.payload;
+      state.currentUser.email = email;
+      state.currentUser.authorId = authorId;
+      state.currentUser.role = role;
     },
   },
 });

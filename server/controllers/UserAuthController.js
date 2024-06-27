@@ -20,14 +20,14 @@ exports.register = async (req, res) => {
 
     const user = await prisma.user.create({
       data: {
-        username,
+        name: username,
         email,
         password: hashedPassword,
       },
     });
 
     return res.status(200).send({
-      user: { id: user.id, username: user.username, email: user.email },
+      user: { id: user.id, username: user.name, email: user.email },
       message: "User registered successfully",
     });
   } catch (error) {
@@ -49,8 +49,8 @@ exports.login = async (req, res) => {
     if (!user) {
       return res.status(400).send({ message: "User not registered" });
     }
-
     const passwordMatched = await bcrypt.compare(password, user.password);
+
     if (!passwordMatched) {
       return res.status(400).send({ message: "Wrong password" });
     }
@@ -72,7 +72,12 @@ exports.login = async (req, res) => {
     });
 
     return res.status(200).send({
-      user: { id: user.id, username: user.username, email: user.email },
+      user: {
+        id: user.id,
+        username: user.name,
+        email: user.email,
+        role: user.role,
+      },
       jwtToken,
     });
   } catch (error) {

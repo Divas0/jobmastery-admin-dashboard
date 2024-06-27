@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { Menu, User, Newspaper, LayoutDashboard, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
-import { updateIsLoggedIn } from "@/redux/authSlice";
+import { updateCurrentUser, updateIsLoggedIn } from "@/redux/authSlice";
 
 const Sidebar = () => {
   const [isToggled, setIsToggled] = useState(false);
@@ -36,8 +36,16 @@ const Sidebar = () => {
       if (!response.ok) {
         throw new Error(`Logout failed: ${response.statusText}`);
       }
+      const userData = {
+        authorId: "",
+        email: "",
+        password: "",
+        username: "",
+        Role: "",
+      };
 
       dispatch(updateIsLoggedIn(false));
+      dispatch(updateCurrentUser(userData));
       toast.success("Successfully logged out");
       navigate("/", { replace: true });
     } catch (error) {
@@ -50,7 +58,7 @@ const Sidebar = () => {
     <div
       className={`min-h-screen ${
         isToggled ? "w-[4%]" : "w-[20%]"
-      } bg-slate-900 text-gray-100 transition-all duration-300`}
+      } bg-[#141718] text-white  font-xl font-semibold transition-all duration-300`}
     >
       <div className="flex flex-col">
         <button onClick={handleToggleSidebar}>
@@ -58,17 +66,17 @@ const Sidebar = () => {
         </button>
       </div>
 
-      <ul className="flex ml-[10px] p-[5px] flex-col mb-[10px]">
+      <ul className="flex  ml-[10px] p-[10px] flex-col mb-[15px]">
         <li className="p-[5px]">
           <NavLink className="flex gap-[10px]" to={"/dashboard"}>
-            <LayoutDashboard />
+            <LayoutDashboard className="text-emerald-400 fill-zinc-200" />
             <span className={isToggled ? "hidden" : ""}>Dashboard</span>
           </NavLink>
         </li>
 
         <li className="p-[5px]" onClick={toggleUserDropdown}>
           <button className="flex gap-[10px]">
-            <User />
+            <User className="text-blue-600" />
             <span className={isToggled ? "hidden" : ""}>User Management</span>
           </button>
         </li>
@@ -87,7 +95,7 @@ const Sidebar = () => {
         )}
 
         <li className="p-[5px] flex gap-[10px]" onClick={toggleBlogDropdown}>
-          <Newspaper />
+          <Newspaper className="fill-gray-600" />
           <span className={isToggled ? "hidden" : ""}>Blog Management</span>
         </li>
         {isBlogDropdownActive && !isToggled && (
@@ -106,7 +114,7 @@ const Sidebar = () => {
 
         <li onClick={handleLogout}>
           <button className="text-red flex gap-[10px] p-[5px]">
-            <LogOut />
+            <LogOut className="text-red-500" />
             <span className={isToggled ? "hidden" : ""}>LogOut</span>
           </button>
         </li>

@@ -18,17 +18,6 @@ exports.addUser = async (req, res) => {
         role,
         isAdmin,
         image,
-        // permissions: {
-        //   create: permissions.map(permission => ({
-        //     name: permission
-        //   }))
-        // },
-        // posts: {
-        //   create: posts.map(post => ({
-        //     title: post.title,
-        //     content: post.content
-        //   }))
-        // }
       },
     });
 

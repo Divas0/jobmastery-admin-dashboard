@@ -97,11 +97,11 @@ const ViewUser = () => {
 
   return (
     <div className="">
-      <Table classNamew="w-full h-auto">
+      <Table classNamew=" h-auto">
         <TableCaption>A list of all users.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-full">SN</TableHead>
+            <TableHead className="">SN</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead className="text-right">Role</TableHead>

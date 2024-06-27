@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-
 import {
   Form,
   FormControl,
@@ -9,9 +8,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-
 import { Link, useNavigate } from "react-router-dom";
-
 import { useMutation } from "react-query";
 import { useDispatch } from "react-redux";
 import { updateCurrentUser, updateIsLoggedIn } from "@/redux/authSlice";
@@ -30,68 +27,65 @@ const Login = () => {
   });
 
   const postData = async (values) => {
-    return await fetch("http://localhost:4000/user/login", {
+    const response = await fetch("http://localhost:4000/user/login", {
       method: "POST",
-
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify(values),
-    })
-      .then((res) => res.json())
-      .catch((err) => console.log(err));
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to login");
+    }
+
+    return await response.json();
   };
 
-  const {
-    data: LoginData,
-    mutate,
-    isLoading,
-    error,
-  } = useMutation({
-    mutationFn: (values) => postData(values),
+  const { mutate, isLoading } = useMutation({
+    mutationFn: postData,
     onSuccess: (data) => {
-      const userData = {
-        email: data?.user?.email,
-        password: data?.user?.password,
-        name: data?.user?.name,
-        authorId: data?.user?.id,
-        Role: data?.user?.Role,
-      };
       if (data?.jwtToken) {
-        dispatch(updateCurrentUser(userData));
+        dispatch(
+          updateCurrentUser({
+            email: data.user.email,
+            authorId: data.user.id,
+            role: data.user.role,
+          })
+        );
         dispatch(updateIsLoggedIn(true));
         navigate("/dashboard");
-        toast.success("login successful");
+        toast.success("Login successful");
       } else {
-        toast.error(data?.message);
+        toast.error(data?.message || "Login failed");
       }
     },
+    onError: (error) => {
+      toast.error(error.message || "An error occurred");
+    },
   });
+
+  const onSubmit = (values) => {
+    mutate(values);
+  };
 
   if (isLoading) {
     return <Loader />;
   }
-  if (error) {
-    return toast.error(error?.message);
-  }
-
-  function onSubmit(values) {
-    mutate(values);
-  }
 
   return (
-    <div className="flex flex-col w-full h-screen items-center border-2 bg-[#f3f4f6] ">
+    <div className="flex flex-col w-full h-screen items-center border-2 bg-[#f3f4f6]">
       <h1 className="text-2xl font-bold pb-[10px] pt-[20px] text-gray-500">
-        {" "}
-        Login{" "}
+        Login
       </h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6   px-[60px] py-[30px] bg-white shadow-md rounded-sm"
+          className="space-y-6 px-[60px] py-[30px] bg-white shadow-md rounded-sm"
         >
-          <h1> sign in to start your session</h1>
+          <h1>Sign in to start your session</h1>
           <FormField
             className="w-full"
             control={form.control}
@@ -100,39 +94,34 @@ const Login = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input className="" placeholder="email" {...field} />
+                  <Input placeholder="email" {...field} />
                 </FormControl>
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>password</FormLabel>
+                <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input type="password" placeholder="password" {...field} />
                 </FormControl>
               </FormItem>
             )}
           />
-          <Button className=" flex justify-center items-center" type="submit">
+          <Button className="flex justify-center items-center" type="submit">
             Submit
           </Button>
           <Link
-            to={"/forgetpassword"}
-            className="flex justify-end bottom-0 text-blue-700 underline hover:text-red-400"
+            to="/forgetpassword"
+            className="flex justify-end text-blue-700 underline hover:text-red-400"
           >
-            {" "}
             Forget password?
           </Link>
         </form>
       </Form>
-      <div>
-        <div className="pt-[5px]"></div>
-      </div>
     </div>
   );
 };
