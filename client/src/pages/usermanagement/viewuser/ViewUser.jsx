@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import {
   Table,
@@ -12,7 +12,7 @@ import {
 import { Delete, Edit, Eye } from "lucide-react";
 import Loader from "@/pages/loader/Loader";
 import ViewModal from "./ViewModal";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const ViewUser = () => {
@@ -58,14 +58,16 @@ const ViewUser = () => {
   const { data: selectedUserData, isLoading: isLoadingUserData } = useQuery({
     queryKey: ["userDetail", selectedUserId],
     queryFn: () =>
-      fetch(`http://localhost:4000/user/singleuserdata/${selectedUserId}`).then((res) => res.json()),
+      fetch(`http://localhost:4000/user/singleuserdata/${selectedUserId}`).then(
+        (res) => res.json()
+      ),
     enabled: !!selectedUserId,
   });
 
   const handleView = (userId) => {
     setSelectedUserId(userId);
     setisViewModal(!isviewModal);
-  }
+  };
 
   const handleEdit = (userId) => {
     console.log("Edit user:", userId);
@@ -81,8 +83,8 @@ const ViewUser = () => {
         <Loader />
       </div>
     );
- }
-  if (isLoadingUserData){
+  }
+  if (isLoadingUserData) {
     return (
       <div>
         <Loader />

@@ -10,7 +10,6 @@ import { persistStore } from "redux-persist";
 const persistor = persistStore(store);
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import ProtectedRoute from "./pages/login/ProtectedRoute.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -18,10 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <PersistGate persistor={persistor}>
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
-          <ProtectedRoute>
-          <App />
-          </ProtectedRoute>
-            
+            <App />
           </BrowserRouter>
         </QueryClientProvider>
       </PersistGate>

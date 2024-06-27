@@ -1,26 +1,22 @@
-import React from "react";
-
 import { Button } from "@/components/ui/button";
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
 
 import { useMutation } from "react-query";
 import { useDispatch } from "react-redux";
 import { updateCurrentUser, updateIsLoggedIn } from "@/redux/authSlice";
 import { toast } from "sonner";
-import Loader from "../loader/Loader"
+import Loader from "../loader/Loader";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -60,7 +56,7 @@ const Login = () => {
         password: data?.user?.password,
         name: data?.user?.name,
         authorId: data?.user?.id,
-        Role:data?.user?.Role,
+        Role: data?.user?.Role,
       };
       if (data?.jwtToken) {
         dispatch(updateCurrentUser(userData));
@@ -86,12 +82,18 @@ const Login = () => {
 
   return (
     <div className="flex flex-col w-full h-screen items-center border-2 bg-[#f3f4f6] ">
-      <h1 className="text-2xl font-bold pb-[10px] pt-[20px] text-gray-500"> Login </h1>
+      <h1 className="text-2xl font-bold pb-[10px] pt-[20px] text-gray-500">
+        {" "}
+        Login{" "}
+      </h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6   px-[60px] py-[30px] bg-white shadow-md rounded-sm">
-         <h1> sign in to start your session</h1>
-         <FormField
-          className="w-full"
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6   px-[60px] py-[30px] bg-white shadow-md rounded-sm"
+        >
+          <h1> sign in to start your session</h1>
+          <FormField
+            className="w-full"
             control={form.control}
             name="email"
             render={({ field }) => (
@@ -116,13 +118,20 @@ const Login = () => {
               </FormItem>
             )}
           />
-          <Button  className=" flex justify-center items-center" type="submit">Submit</Button>
+          <Button className=" flex justify-center items-center" type="submit">
+            Submit
+          </Button>
+          <Link
+            to={"/forgetpassword"}
+            className="flex justify-end bottom-0 text-blue-700 underline hover:text-red-400"
+          >
+            {" "}
+            Forget password?
+          </Link>
         </form>
       </Form>
       <div>
-        <div className="pt-[5px]">
-          
-        </div>
+        <div className="pt-[5px]"></div>
       </div>
     </div>
   );

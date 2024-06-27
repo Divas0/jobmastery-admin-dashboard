@@ -1,6 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-var HTML = require("html-parse-stringify");
 
 exports.addBlogs = async (req, res) => {
   const {
@@ -70,13 +69,12 @@ exports.addBlogs = async (req, res) => {
       },
     }));
 
-    const text = HTML.parse(content);
     const blog = await prisma.post.create({
       data: {
         title,
         subtitle: secondHeading,
         tagline,
-        content: text,
+        content,
         scheduledPublishTime: isoScheduledPublishTime,
         newsHashTag,
         status: publishStatus ? "PUBLISH" : "DRAFT",
