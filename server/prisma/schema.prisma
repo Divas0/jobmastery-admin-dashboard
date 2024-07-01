@@ -49,7 +49,7 @@ model Post {
   guestWriter Guest?        @relation(fields: [guestId], references: [id])
   guestId     String?
   categories  Category[]    @relation("PostCategories")
-  newsHashTag String?
+  newsHashTag String[]
   scheduledPublishTime DateTime?
 }
 

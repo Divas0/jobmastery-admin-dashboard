@@ -2,28 +2,27 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 exports.addCategory = async (req, res) => {
-  const { name, subcategories } = req.body;
+  const { name, subcategory } = req.body;
 
   try {
     const newCategory = await prisma.category.create({
       data: {
         name,
-        subcategories
-        },
-      
+        subcategories: subcategory,
+      },
     });
 
     return res
       .status(200)
-      .json({ category: newCategory, message: "category added successfully" });
+      .json({ category: newCategory, message: "Category added successfully" });
   } catch (error) {
     console.error(error);
+
     return res
       .status(500)
       .json({ message: "Error adding category", error: error.message });
   }
 };
-
 exports.addSubCategory = async (req, res) => {
   const { subcategoryName, category } = req.body;
   try {

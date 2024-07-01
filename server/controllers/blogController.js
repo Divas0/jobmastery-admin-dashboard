@@ -1,7 +1,12 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const path = require("path");
 
 exports.addBlogs = async (req, res) => {
+  const url = req.file?.path;
+  const file = req.file;
+  console.log(file);
+
   const {
     title,
     tagline,
@@ -12,7 +17,7 @@ exports.addBlogs = async (req, res) => {
     content,
     scheduledPostTime,
     categories,
-    featuredImage,
+
     imageCaption,
     publishStatus,
   } = req.body;
@@ -35,6 +40,9 @@ exports.addBlogs = async (req, res) => {
       return res.status(400).json({ message: "Categories must be an array" });
     }
 
+    const newsHashTagTexts = newsHashTag
+      ? newsHashTag.map((tag) => tag.text)
+      : [];
     let guestId = null;
     if (guestInfo && guestInfo.name && guestInfo.email) {
       const guest = await prisma.guest.upsert({
@@ -76,9 +84,9 @@ exports.addBlogs = async (req, res) => {
         tagline,
         content,
         scheduledPublishTime: isoScheduledPublishTime,
-        newsHashTag,
+        newsHashTag: newsHashTagTexts,
         status: publishStatus ? "PUBLISH" : "DRAFT",
-        image: featuredImage,
+        image: url,
         caption: imageCaption,
         author: { connect: { id: author.id } },
         guestWriter: guestId ? { connect: { id: guestId } } : undefined,
