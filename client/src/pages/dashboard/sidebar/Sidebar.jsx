@@ -66,7 +66,7 @@ const Sidebar = () => {
         </button>
       </div>
 
-      <ul className="flex  ml-[10px] p-[10px] flex-col mb-[15px]">
+      <ul className="flex  ml-[10px] p-[10px] flex-col mb-[15px] cursor-pointer">
         <li className="p-[5px]">
           <NavLink className="flex gap-[10px]" to={"/dashboard"}>
             <LayoutDashboard className="text-emerald-400 fill-zinc-200" />

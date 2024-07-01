@@ -79,14 +79,14 @@ const ViewUser = () => {
   };
   if (isLoading) {
     return (
-      <div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-800">
         <Loader />
       </div>
     );
   }
   if (isLoadingUserData) {
     return (
-      <div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-800">
         <Loader />
       </div>
     );

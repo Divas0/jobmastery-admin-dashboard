@@ -11,6 +11,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { User } from "lucide-react";
+import { useQuery } from "react-query";
+import { useSelector } from "react-redux";
 
 ChartJS.register(
   CategoryScale,
@@ -25,6 +28,23 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+  const id = useSelector((state) => state.auth.currentUser.authorId);
+
+  const { data: userData } = useQuery({
+    queryKey: "singleUserData",
+    queryFn: async () => {
+      const response = await fetch(
+        `http://localhost:4000/user/singleuserdata/${id}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    },
+  });
+
+  console.log(userData);
+
   const barChartData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
@@ -72,8 +92,20 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen w-full">
-      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+    <div className="p-4 bg-gray-100 min-h-screen w-full">
+      <div className="flex justify-between">
+        <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
+        <div>
+          <h1 className="flex gap-[5px] font-semibold text-gray-900">
+            {" "}
+            <span>
+              {" "}
+              <User />
+            </span>{" "}
+            {userData?.user?.name}
+          </h1>
+        </div>
+      </div>
 
       {/* Four cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb- text-white ">

@@ -1,16 +1,18 @@
 import { useState } from "react";
-
 import GuestModal from "./GuestModal";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useMutation, useQuery } from "react-query";
 import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
+import Loader from "@/pages/loader/Loader";
+import { WithContext as ReactTags, SEPARATORS } from "react-tag-input";
 
 const AddBlog = () => {
   const [editorData, setEditorData] = useState("");
   const [activeCategory, setActiveCategory] = useState(null);
   const [isModalActive, setIsModalActive] = useState(false);
+  const [newsHashTag, setNewsHashTag] = useState([]);
   // const [selectedReporterName, setSelectedReporterName] = useState("");
 
   const [formData, setFormData] = useState({
@@ -20,7 +22,7 @@ const AddBlog = () => {
     reporterName: "",
     guestInfo: [],
     guestName: "",
-    newsHashTag: "",
+    newsHashTag: [],
     content: "",
     scheduledPostTime: new Date().toISOString(),
     categories: [],
@@ -47,6 +49,13 @@ const AddBlog = () => {
       content: data,
     }));
   };
+  const handleAddition = (tag) => {
+    setNewsHashTag((prevTags) => [...prevTags, tag]);
+    setFormData((prevData) => ({
+      ...prevData,
+      newsHashTag: [...prevData.newsHashTag, tag],
+    }));
+  };
 
   const handleGuest = () => {
     setIsModalActive(true);
@@ -58,23 +67,13 @@ const AddBlog = () => {
     if (!formData.content) errors.content = "Content is required";
     if (formData.categories.category.length === 0)
       errors.categories = "Select at least one category";
+
     return errors;
   };
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
-    // if (name.startsWith("categories.")) {
-    //   const [, field] = name.split(".");
-    //   setFormData((prevData) => ({
-    //     ...prevData,
-    //     categories: {
-    //       ...prevData.categories,
-    //       [field]: checked
-    //         ? [...prevData.categories[field], value]
-    //         : prevData.categories[field].filter((item) => item !== value),
-    //     },
-    //   }));
-    // } else
+
     if (type === "file") {
       setFormData({ ...formData, [name]: e.target.files[0] });
     } else {
@@ -165,7 +164,11 @@ const AddBlog = () => {
   });
 
   if (categoryIsLoading) {
-    return <h1>Category loading...</h1>;
+    return (
+      <h1>
+        <Loader />
+      </h1>
+    );
   }
 
   const handleChevronDown = (categoryId) => {
@@ -337,13 +340,22 @@ const AddBlog = () => {
             >
               News Hash Tag
             </label>
-            <input
+            {/* <input
               type="text"
               id="newsHashTag"
               name="newsHashTag"
               value={formData.newsHashTag}
               onChange={handleChange}
               className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+            /> */}
+            <ReactTags
+              tags={newsHashTag}
+              delimiters={SEPARATORS}
+              handleAddition={handleAddition}
+              inputFieldPosition="bottom"
+              autocomplete
+              placeholder="Type and press enter to add a tag"
+              className="1 p-2 border border-gray-300 rounded-md  bg-red-300 w-full"
             />
           </div>
 

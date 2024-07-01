@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 
+// eslint-disable-next-line react/prop-types
 const BlogCard = ({ title, author, image, content, createdAt, blogid }) => {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">

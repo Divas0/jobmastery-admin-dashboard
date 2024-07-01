@@ -4,9 +4,10 @@ import { toast } from "sonner";
 
 const AddCategory = () => {
   const [category, setCategory] = useState("");
-  const [subcategory, setSubcategory] = useState([""]);
+  const [subcategory, setSubcategory] = useState("");
+  const [subcategories, setSubcategories] = useState([]);
 
-  const formData = { name: category, subcategory };
+  const formData = { name: category, subcategory: subcategories };
 
   const addCategoryMutation = useMutation(
     (data) =>
@@ -26,17 +27,34 @@ const AddCategory = () => {
       onSuccess: (data) => {
         console.log("category added successfully:", data);
         if (data?.category) {
-          toast("category added succesfully");
+          toast("Category added successfully");
         }
+
+        setCategory("");
+        setSubcategory("");
+        setSubcategories([]);
       },
       onError: (error) => {
         console.error("Error adding category:", error);
+        toast.error("Failed to add category");
       },
     }
   );
 
+  const handleSubcategoryChange = (e) => {
+    setSubcategory(e.target.value);
+  };
+
+  const handleAddSubcategory = () => {
+    if (subcategory.trim() !== "") {
+      setSubcategories((prev) => [...prev, subcategory.trim()]);
+      setSubcategory("");
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(formData);
     addCategoryMutation.mutate(formData);
   };
 
@@ -75,19 +93,36 @@ const AddCategory = () => {
           >
             Subcategory Name (Optional)
           </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="subcategory"
-            type="text"
-            placeholder="Enter subcategory name"
-            value={subcategory}
-            onChange={(e) => setSubcategory(e.target.value)}
-          />
+          <div className="flex">
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="subcategory"
+              type="text"
+              placeholder="Enter subcategory name"
+              value={subcategory}
+              onChange={handleSubcategoryChange}
+            />
+            <button
+              type="button"
+              onClick={handleAddSubcategory}
+              className="ml-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Add
+            </button>
+          </div>
+          {subcategories.length > 0 && (
+            <ul className="mt-2">
+              {subcategories.map((sub, index) => (
+                <li key={index} className="text-sm text-gray-600">
+                  {sub}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="flex items-center justify-center">
           <button
-            onClick={handleSubmit}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="submit"
           >
